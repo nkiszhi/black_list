@@ -16,7 +16,7 @@
 
   - feeds：每天多次调用get_blacklist.py在一个csv内追加数据
 
-     			 每天调用一次handle.py对不去重的csv数据进行处理并存储到data_final文件夹内
+     每天调用一次handle.py对不去重的csv数据进行处理并存储到data_final文件夹内
 
 - crontab的使用
 
@@ -30,6 +30,6 @@
 
   service cron start
 
-  ![1570616316656](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\1570616316656.png)
+  ![图片.png-26.1kB](http://static.zybuluo.com/buchiyexiao/rpyh9buzb977r4webdpc0d9q/%E5%9B%BE%E7%89%87.png)
 
   以上是个人crontab内容的修改，crontab前五个参数分别是日，月，周，月，年。后面是执行的命令，需要采用绝对路径
