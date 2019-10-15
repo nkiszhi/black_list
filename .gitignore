@@ -1,0 +1,50 @@
+#data folder
+trails_data
+
+
+# Byte-compiled / optimized / DLL files
+server/ml/
+__pycache__/
+*.npy
+*.py[cod]
+*.ipynb
+*$py.class
+*.exe
+*.apk
+*.db
+
+# temp
+*.bak
+*.tmp
+*.swp
+.DS_Store
+
+# Distribution / packaging
+.Python
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# virtualenv
+.venv
+venv/
+ENV/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mypy
+.mypy_cache/
+.idea/
+server/.DS_Store

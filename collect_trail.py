@@ -67,11 +67,14 @@ def update_trails():
     Update trails from feeds
     """
     #check trails folder
-    if not os.path.exists(TRAILS_FOLDER):os.popen("mkdir "+TRAILS_FOLDER)
+    if not os.path.exists(TRAILS_FOLDER):
+        os.popen("mkdir " + TRAILS_FOLDER)
     
     date_now = datetime.now().strftime('%Y-%m-%d')
-    trails_file = os.path.join(TRAILS_FOLDER, date_now)
-    print date_now
+    trails_file = date_now + ".csv"
+    #trails_file = os.path.join(TRAILS_FOLDER, date_now)
+    trails_file = os.path.join(TRAILS_FOLDER, trails_file)
+    print trails_file
     trails = TrailsDict()
     trails.update(load_trails(trails_file))       #load trails
     
@@ -117,6 +120,7 @@ def update_trails():
     #thread = threading.Timer(3600, update_trails)
     #thread.daemon = True
     #thread.start()
+
 def main():
     try:
         update_trails()
