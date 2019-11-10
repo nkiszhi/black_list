@@ -7,9 +7,9 @@
 
 
  1 每天blacklist的数量
- 
+
  --x轴：时间
- 
+
  --y轴：数量
 
 
@@ -37,23 +37,18 @@
 
 --y2：相对于前一天减少ip的数量
 
-
 6 总共的ip、domain、url的占比
 
+
+饼状图
+
+7 每天的ip、domain和url的占比
 
 --x轴：时间
 
 --y轴：ip、domain、url的个数
 
 
-7 新增内容中ip、domain和url的占比
 
-输入：ip,domain,url的个数
-
-
-8 出现周期占比
-
-输入：特定出现周期的个数
-
-
+注：数据存放在当前目录下的’data‘文件夹中
 

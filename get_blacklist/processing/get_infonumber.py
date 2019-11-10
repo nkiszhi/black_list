@@ -1,10 +1,8 @@
-
 #! /usr/bin/env python
 # -*- coding: UTF-8 -*-
 '''
-负责对这段时间内各种info数量的统计,完成README中的第二个工作
+功能3
 '''
-
 import pandas as pd
 import general_dataframe
 

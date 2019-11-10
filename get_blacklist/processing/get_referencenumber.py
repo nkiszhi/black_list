@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: UTF-8 -*-
 '''
-负责对这段日期reference数量的统计,完成README中的第三个工作
+负责对这段日期reference数量的统计
+功能2
 '''
 import pandas as pd
 import general_dataframe
