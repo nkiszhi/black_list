@@ -67,7 +67,8 @@ def update_trails():
     Update trails from feeds
     """
     #check trails folder
-    if not os.path.exists(TRAILS_FOLDER):os.popen("mkdir "+TRAILS_FOLDER)
+    if not os.path.exists(TRAILS_FOLDER):
+        os.popen("mkdir "+TRAILS_FOLDER)
     
     date_now = datetime.now().strftime('%Y-%m-%d')
     trails_file = os.path.join(TRAILS_FOLDER, date_now)
@@ -117,6 +118,7 @@ def update_trails():
     #thread = threading.Timer(3600, update_trails)
     #thread.daemon = True
     #thread.start()
+
 def main():
     try:
         update_trails()
