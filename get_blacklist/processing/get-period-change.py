@@ -1,12 +1,13 @@
 import pandas as pd
 import os
+import judge_dir
 '''
 作者：刘旭萌
 功能5
 '''
 
-
-path = './data/'
+judge_dir.dir("./data/")
+path = '../datanew/'
 date_list = os.listdir(path)
 date_list.sort()
 date_old = []
@@ -33,4 +34,4 @@ for i in range(1, len(date_list)):
     todayinc=secondday-common
     yesterdaydes=firstday-common
     period = period.append(pd.DataFrame({'date': [date_list[i][:-4]], 'decline': [yesterdaydes],'increase':[todayinc]}))
-period.to_csv('./get_period_change.csv', sep=',', header=True, index=False)
+period.to_csv('./data/get_period_change.csv', sep=',', header=True, index=False)

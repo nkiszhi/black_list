@@ -12,6 +12,7 @@ def get_reference():
     info_list.drop_duplicates()
     info_series = info_list['reference'].value_counts()
     df=pd.DataFrame({'reference':info_series.index, 'number':info_series.values})
-    df.to_csv("referencenum.csv",header=1,index=0)
+    df.to_csv("./data/referencenum.csv",header=1,index=0)
+    return df
 
 get_reference()

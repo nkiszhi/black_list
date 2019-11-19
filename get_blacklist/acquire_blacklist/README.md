@@ -1,3 +1,7 @@
+
+
+# acquire_blacklist
+
 ### 依赖linux系统中crontab命令完成每天数据集的获取工作
 
 
@@ -5,7 +9,7 @@
 - 实现目标
 
   借助feeds文件夹中已有的爬虫脚本完成对样本的收集工作，然后将收集到的数据整合成一个DataFrame导入到datanew文件夹的csv文件中，为了减少由于网络等原因引起的数据不等的影响，这里在每天的六个固定时间点（可调节）进行数据的收集工作，并在每次收集之后进行去重操作。
- 
+
 
 - 代码结构
 
@@ -31,11 +35,11 @@
 
   编辑的crontab内容如下:
       
-     
+  
       0 4,8,12,16,20,23 * * * sh /root/get_blacklist/handle.sh
        
       0 2,6,10,14,18,21 * * * sh /root/get_blacklist/get_blacklist.sh
 
 
   以上是个人crontab内容的修改，crontab前五个参数分别是日，月，周，月，年。后面是执行的命令，需要采用绝对路径
-# acquire_blacklist
+

@@ -1,35 +1,20 @@
-### 依赖linux系统中crontab命令完成每天数据集的获取工作
+# 收集与处理blacklist
 
-###### Buchiyexiao
+- #### 实现目标：
 
-- 实现目标
+借助已有项目MalTrail的爬虫脚本对blacklist进行收集，使用python的pandas库对收集到的数据进行处理并导入csv，借助superset将数据以柱状图、饼图等直观的展现出来。最终实现 数据收集—数据处理—数据展示完全自动化的目标。
 
-  借助已有的爬虫脚本完成对样本的收集工作，然后将收集到的数据整合成一个DataFrame导入一个csv文件中，为了减少由于网络等原因引起的数据不等的影响，这里在每天的三个固定时间点（可调节）进行数据的收集工作，并导入到同一个csv文件。
+- #### 结构介绍：
 
-  在每天20:00调用一个脚本完成对当天获得的csv文件进行去重操作，以减少数据不等的影响。
+acquire_blacklist：借助已有的爬虫脚本完成对样本的收集工作，并将收集数据整合为DataFrame导入一个csv文件中。
 
-- 代码结构
+processing:对收集到的样本进行数据处理，处理过的csv存放在该目录下的data文件夹里（文件夹会自动创建）
 
-  - data：存储当天获得的不去重数据csv
+datanew：存储当天获得的以日期命名的csv文件,当晚的11点完成对当天csv收集的最后一次去重工作.(可调整) (文件夹会自动创建)
 
-  - data_final：存储当天去重处理后的数据csv
 
-  - feeds：每天多次调用get_blacklist.py在一个csv内追加数据
 
-     每天调用一次handle.py对不去重的csv数据进行处理并存储到data_final文件夹内
 
-- crontab的使用
 
-  crontab -e对crontab内容进行修改
 
-  crontab -l查看当前内容
 
-  每次修改后需要输入
-
-  service cron reload
-
-  service cron start
-
-  ![图片.png-26.1kB](http://static.zybuluo.com/buchiyexiao/rpyh9buzb977r4webdpc0d9q/%E5%9B%BE%E7%89%87.png)
-
-  以上是个人crontab内容的修改，crontab前五个参数分别是日，月，周，月，年。后面是执行的命令，需要采用绝对路径

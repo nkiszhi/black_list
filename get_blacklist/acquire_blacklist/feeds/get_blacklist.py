@@ -40,6 +40,9 @@ for i in xrange(len(filenames)):
 
             results = function()
 
-            with open( "/root/get_blacklist/datanew/" + data_re + ".csv", 'a')as ff:
+            if not os.path.exists("../../datanew/"):
+                os.makedirs("../../datanew/")
+
+            with open( "../../datanew/" + data_re + ".csv", 'a')as ff:
                 csv_write = csv.writer(ff)
                 write_to_csv(results)

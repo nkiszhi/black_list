@@ -1,13 +1,14 @@
 import pandas as pd
 import os
+import judge_dir
 '''
 功能4
 '''
-path = './data/'
+path = '../datanew/'
 date_list = os.listdir(path)
 date_list.sort()
 date_old = []
-
+judge_dir.dir("./data/")
 if len(date_old) != 0 and len(date_old) != 1:
     index = date_list.index(date_old[-2] + '.csv')
     date_list = date_list[index + 1:]
@@ -49,7 +50,7 @@ for i in range(1, len(date_list)):
     inc_reference=referencesecond-reference_common
 
     period = period.append(pd.DataFrame({'date': [date_list[i][:-4]], 'change-info': [inc_info],'change-reference':[inc_reference]}))
-period.to_csv('./get_source_change.csv', sep=',', header=True, index=False)
+period.to_csv('./data/get_source_change.csv', sep=',', header=True, index=False)
 
 
 
