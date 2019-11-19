@@ -1,10 +1,6 @@
-
-
 # acquire_blacklist
 
 ### 依赖linux系统中crontab命令完成每天数据集的获取工作
-
-
 
 - 实现目标
 

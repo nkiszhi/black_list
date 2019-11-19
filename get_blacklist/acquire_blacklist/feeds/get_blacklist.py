@@ -1,5 +1,6 @@
-#!/usr/bin/python
-#!/bin/bash
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import pandas as pd
 import glob
 import inspect
@@ -43,6 +44,6 @@ for i in xrange(len(filenames)):
             if not os.path.exists("../../datanew/"):
                 os.makedirs("../../datanew/")
 
-            with open( "../../datanew/" + data_re + ".csv", 'a')as ff:
+            with open( "../../datanew/" + data_re + ".csv", 'a') as ff:
                 csv_write = csv.writer(ff)
                 write_to_csv(results)
