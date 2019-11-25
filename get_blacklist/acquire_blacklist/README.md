@@ -35,7 +35,10 @@
       0 4,8,12,16,20,23 * * * sh /root/get_blacklist/handle.sh
        
       0 2,6,10,14,18,21 * * * sh /root/get_blacklist/get_blacklist.sh
+      
 
 
   以上是个人crontab内容的修改，crontab前五个参数分别是日，月，周，月，年。后面是执行的命令，需要采用绝对路径
+  
+  使用之前需要修改handle.sh和get_blacklist.sh中的绝对路径为handle.py的绝对路径和feeds中get_blacklist.py的绝对路径。
 
