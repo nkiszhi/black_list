@@ -1,72 +1,11 @@
 # Trails
 *.zip
 
-# Torrent
-torrent.list
-rss_feed.xml
-config
-VirusShare_00*
-*.zip.torrent*
-*.swp
-DATA
-logs
-snapshots
-
-# Prerequisites
-*.d
-
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
 #data folder
-trails_data
+trails/*
+result/*
+run.sh
+
 
 
 # Byte-compiled / optimized / DLL files
@@ -110,7 +49,3 @@ ENV/
 
 # Rope project settings
 .ropeproject
-
-# mypy
-.mypy_cache/
-.idea/
