@@ -14,4 +14,3 @@ def get_info():
     return df
 
 get_info()
-

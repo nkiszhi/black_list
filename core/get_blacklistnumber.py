@@ -26,13 +26,16 @@ file_list.sort()
 map(write, file_list)
 
 def get_frame():
-    df=pd.DataFrame({"date":file_list,"number":date_num}) 
+    df = pd.DataFrame({"date":file_list,"number":date_num})
+    print(11)
+    tm = str(file_list[0]) + '-' + str(file_list[-1])
+    total_black = pd.DataFrame({"date":tm, "sum": df['number'].sum()},index=[0])
+    total_black.to_csv("../result/blacklist_number.csv", index=None)
     df.to_csv("../result/blacklist_number.csv",index=None)
     return df
 
 
 get_frame()
-
 
 
 
