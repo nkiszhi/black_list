@@ -1,3 +1,4 @@
 README
 
 DGA_DP文件夹中，存放了基于深度学习算法的dga检测
+具体的lstm模型文件，可以看web中的web_dga/model
