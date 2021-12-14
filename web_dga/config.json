@@ -1,0 +1,24 @@
+{
+    "LSTM": {
+        "is_neural_network": true,
+        "model_add": "./data/model/LSTM_model.json",
+        "model_weight": "./data/model/LSTM_model.h5"
+    },
+    "XGBOOST": {
+        "is_neural_network": false,
+        "model_add": "./data/model/XGBoost_model.pkl",
+        "train_score": "./data/model/XGBoost_train_scores.npy"
+    },
+    "SVM": {
+        "is_neural_network": false,
+        "model_add": "./data/model/SVM_model.pkl",
+        "train_score": "./data/model/RF_train_scores.npy"
+    },
+    "B-RF": {
+        "is_neural_network": false,
+        "model_add": "./data/model/RF_model.pkl",
+        "train_score": "./data/model/SVM_train_scores.npy"
+    },
+    "standard_scaler_add": "./data/model/standardscalar.pkl",
+    "model_floder": "./data/model"
+}
