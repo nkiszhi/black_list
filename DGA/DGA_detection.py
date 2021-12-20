@@ -2,7 +2,10 @@
 """
 Created on 2020/8/16 12:38
 
-@author : dengcongyi0701@163.com
+__author__ = "Congyi Deng"
+__copyright__ = "Copyright (c) 2021 NKAMG"
+__license__ = "GPL"
+__contact__ = "dengcongyi0701@163.com"
 
 Description:
 
@@ -164,7 +167,6 @@ class SVM_classifier:
 class XGBoost_classifier:
 
     def __init__(self):
-        # 目前先用RF特征
         self.XGBoost_clf = XGBClassifier(max_depth=5, learning_rate=0.1, n_estimator=100, silent=True,
                                          objective='binary:logistic')
         self.standardScaler = StandardScaler()
@@ -230,16 +232,17 @@ class XGBoost_classifier:
 
 
 if __name__ == "__main__":
-    train_add = r"M:\DGA\features\RF_train_features.csv"
-    test_add = r"M:\DGA\features\RF_test_features.csv"
-    SVM_train_add = r"M:\DGA\features\SVM_train_features.csv"
-    SVM_test_add = r"M:\DGA\features\SVM_test_features.csv"
-    RF_model_add = r"M:\DGA\model\RF_model.pkl"
-    RF_standard_scaler_add = r"M:\DGA\model\RF_standardscalar.pkl"
-    SVM_model_add = r"M:\DGA\model\SVM_model.pkl"
-    SVM_standard_scaler_add = r"M:\DGA\model\SVM_standardscalar.pkl"
-    XGBoost_model_add = r"M:\DGA\model\XGBoost_model.pkl"
-    XGBoost_standard_scaler_add = r"M:\DGA\model\RF_standardscalar.pkl"
+    train_add = r"./data/feature/RF_train_features.csv"
+    test_add = r"./data/feature/RF_test_features.csv"
+    SVM_train_add = r"./data/feature/SVM_train_features.csv"
+    SVM_test_add = r"./data/feature/SVM_test_features.csv"
+    RF_model_add = r"./data/model/RF_model.pkl"
+    RF_standard_scaler_add = r"./data/model/RF_standardscalar.pkl"
+    SVM_model_add = r"./data/model/SVM_model.pkl"
+    SVM_standard_scaler_add = r"./data/model/SVM_standardscalar.pkl"
+    # XGBoost用的是RF特征
+    XGBoost_model_add = r"./data/model/XGBoost_model.pkl"
+    XGBoost_standard_scaler_add = r"./data/model/RF_standardscalar.pkl"
 
     # RF_clf = RF_classifier()
     # # RF_clf.train(train_add, RF_model_add)

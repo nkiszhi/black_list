@@ -2,7 +2,10 @@
 """
 Created on 2020/8/12 17:34
 
-@author : dengcongyi0701@163.com
+__author__ = "Congyi Deng"
+__copyright__ = "Copyright (c) 2021 NKAMG"
+__license__ = "GPL"
+__contact__ = "dengcongyi0701@163.com"
 
 Description:
 
@@ -18,13 +21,22 @@ col = ['aa', 'dev_id', 'dst_type', 'ad', 'atypes', 'cd', 'dst_branch_id', 'nscnt
          'src_branch_id']
 
 
-def data_processing():
-    begin = "2020-02-14"
-    end = "2020-02-17"
-    date_range = pd.date_range(begin, end, freq='1D')
+def data_processing(log_add, begin_date, end_date, to_add):
+    """
+    处理空管局网络日志
+    :param log_add: 日志存放地址
+    :param begin_date: 起始时间
+    :param end_date: 结束时间
+    :param to_add: 处理后日志存放地址
+    :return:
+    """
+    # begin = "2020-02-14"
+    # end = "2020-02-17"
+    date_range = pd.date_range(begin_date, end_date, freq='1D')
     for day in date_range:
         date = str(day.date())
-        file_add = r"M:\huadong_log_data\log\ngfw.dnsflow\ngfw.dnsflow-{}.json".format(date)
+        # file_add = r"M:\huadong_log_data\log\ngfw.dnsflow\ngfw.dnsflow-{}.json".format(date)
+        file_add = r"{}/ngfw.dnsflow-{}.json".format(log_add, date)
         response_list = list()
         success = 0
         with open(file_add, 'r', encoding='utf-8') as f:
@@ -50,7 +62,8 @@ def data_processing():
 
             print("success:", success)
             df = pd.DataFrame(response_list, columns=col)
-            df.to_csv(r"M:\mh_data\dns\dns-response-flow-{}.csv".format(date))
+            # df.to_csv(r"M:\mh_data\dns\dns-response-flow-{}.csv".format(date))
+            df.to_csv(r"{}/dns-response-flow-{}.csv".format(to_add, date))
             del(df)
 
 
@@ -88,5 +101,4 @@ def data_washing(flag, dirty_add, clean_add):
 
 
 if __name__ == "__main__":
-    # data_washing(0, r"M:\ly\white\alexa_top_100w.csv", r"M:\ly\white\white_100w.csv")
-    data_washing(1, r"M:\DGA\data\black\black_dataset.csv", r"M:\DGA\data\black\black_100w.csv")
+    data_washing(1, r"./data/sample/black_dataset.csv", r"./data/sample/sample_black.csv")

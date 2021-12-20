@@ -2,7 +2,10 @@
 """
 Created on 2020/8/13 10:01
 
-@author : dengcongyi0701@163.com
+__author__ = "Congyi Deng"
+__copyright__ = "Copyright (c) 2021 NKAMG"
+__license__ = "GPL"
+__contact__ = "dengcongyi0701@163.com"
 
 Description:
 
@@ -20,16 +23,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 dgaTLD_list = ["cf", "recipes", "email", "ml", "gq", "fit", "cn", "ga", "rest", "tk"]
-hmm_add = r".\static\hmm_matrix.csv"
-gib_add = r".\static\gib_model.pki"
-gramfile_add = r".\static\n_gram_rank_freq.txt"
-private_tld_file = r".\static\private_tld.txt"
+hmm_add = r"./static/hmm_matrix.csv"
+gib_add = r"./static/gib_model.pki"
+gramfile_add = r"./static/n_gram_rank_freq.txt"
+private_tld_file = r"./static/private_tld.txt"
 hmm_prob_threshold = -120
-white_file_add = r"M:\DGA\data\white\white.csv"
-black_file_add = r"M:\DGA\data\black\black.csv"
+white_file_add = r"./data/sample/sample_white.csv"
+black_file_add = r"./data/sample/sample_black.csv"
 
-feature_dir = r"M:\DGA\features"
-model_dir = r"M:\DGA\model"
+feature_dir = r"./data/feature"
+model_dir = r"./data/model"
 
 accepted_chars = 'abcdefghijklmnopqrstuvwxyz '
 pos = dict([(char, idx) for idx, char in enumerate(accepted_chars)])
@@ -372,28 +375,33 @@ def dataset_generation(method):
 
     print("__________Generating Train Set__________")
     train_feature = feature_extraction(df_train, method)
-    train_feature.to_csv(r"{}\{}_raw_train_features.csv".format(feature_dir, method), index=None)
+    train_feature.to_csv(r"{}/{}_raw_train_features.csv".format(feature_dir, method), index=None)
     train_feature = train_feature.set_index(['domain_name', 'label'])
     standardScaler = StandardScaler()
     standardScaler.fit(train_feature.values)
 
     print("__________Generating Test Set__________")
     test_feature = feature_extraction(df_test, method)
-    test_feature.to_csv(r"{}\{}_raw_test_features.csv".format(feature_dir, method), index=None)
+    test_feature.to_csv(r"{}/{}_raw_test_features.csv".format(feature_dir, method), index=None)
     test_feature = test_feature.set_index(['domain_name', 'label'])
 
     train_feature = pd.DataFrame(standardScaler.transform(train_feature), index=train_feature.index,
                                  columns=train_feature.columns)
     train_feature = train_feature.reset_index()
-    train_feature.to_csv(r"{}\{}_train_features.csv".format(feature_dir, method), index=None)
+    train_feature.to_csv(r"{}/{}_train_features.csv".format(feature_dir, method), index=None)
     test_feature = pd.DataFrame(standardScaler.transform(test_feature), index=test_feature.index,
                                 columns=test_feature.columns)
     test_feature = test_feature.reset_index()
-    test_feature.to_csv(r"{}\{}_test_features.csv".format(feature_dir, method), index=None)
-    pickle.dump(standardScaler, open(r"{}\{}_standardscalar.pkl".format(model_dir, method), 'wb'))
+    test_feature.to_csv(r"{}/{}_test_features.csv".format(feature_dir, method), index=None)
+    pickle.dump(standardScaler, open(r"{}/{}_standardscalar.pkl".format(model_dir, method), 'wb'))
     return
 
 def unbalance_feature_exaction(method):
+    """
+    特征提取
+    :param method: 算法名称
+    :return:
+    """
     bk_df = pd.read_csv(black_file_add, header=None)
     wh_df = pd.read_csv(white_file_add, header=None)
 
@@ -407,7 +415,7 @@ def unbalance_feature_exaction(method):
             fea.extend(RF_get_feature(bk_df.at[ind, 0]))
             fea_list_bk.append(fea)
         fea_df_bk = pd.DataFrame(fea_list_bk, columns=RF_col)
-        fea_df_bk.to_csv(r"{}\{}_RawFeatures_Black.csv".format(feature_dir, method))
+        fea_df_bk.to_csv(r"{}/{}_RawFeatures_Black.csv".format(feature_dir, method))
 
         fea_list_wh = list()
         for ind in wh_df.index:
@@ -417,7 +425,7 @@ def unbalance_feature_exaction(method):
             fea.extend(RF_get_feature(bk_df.at[ind, 0]))
             fea_list_wh.append(fea)
         fea_df_wh = pd.DataFrame(fea_list_wh, columns=RF_col)
-        fea_df_wh.to_csv(r"{}\{}_RawFeatures_White.csv".format(feature_dir, method))
+        fea_df_wh.to_csv(r"{}/{}_RawFeatures_White.csv".format(feature_dir, method))
 
     # SVM features
     elif method == "SVM":
@@ -429,7 +437,7 @@ def unbalance_feature_exaction(method):
             fea.extend(SVM_get_feature(bk_df.at[ind, 0]))
             fea_list_bk.append(fea)
         fea_df_bk = pd.DataFrame(fea_list_bk, columns=SVM_col)
-        fea_df_bk.to_csv(r"{}\{}_RawFeatures_Black.csv".format(feature_dir, method))
+        fea_df_bk.to_csv(r"{}/{}_RawFeatures_Black.csv".format(feature_dir, method))
 
         fea_list_wh = list()
         for ind in wh_df.index:
@@ -439,14 +447,12 @@ def unbalance_feature_exaction(method):
             fea.extend(SVM_get_feature(bk_df.at[ind, 0]))
             fea_list_wh.append(fea)
         fea_df_wh = pd.DataFrame(fea_list_wh, columns=SVM_col)
-        fea_df_wh.to_csv(r"{}\{}_RawFeatures_White.csv".format(feature_dir, method))
+        fea_df_wh.to_csv(r"{}/{}_RawFeatures_White.csv".format(feature_dir, method))
 
 
 
 
 if __name__ == "__main__":
 
-    # dataset_generation("SVM")
-    # unbalance_feature_exaction("SVM")
-
-    print(get_name('webmail.mofcom.gov.cn.accountverify.validation8u2904.jsbchkufd546.nxjkgdgfhh345s.fghese4.ncdjkbfkjh244e.nckjdbcj86hty1.cdjcksdcuh57hgy43.njkd75894t5.njfg87543.kdjsdkj7564.jdchjsdy'))
+    dataset_generation("SVM")
+    unbalance_feature_exaction("SVM")
