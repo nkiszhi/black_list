@@ -2,7 +2,10 @@
 """
 Created on 2020/9/14 9:36
 
-@author : dengcongyi0701@163.com
+__author__ = "Congyi Deng"
+__copyright__ = "Copyright (c) 2021 NKAMG"
+__license__ = "GPL"
+__contact__ = "dengcongyi0701@163.com"
 
 Description:
 
@@ -22,6 +25,8 @@ import matplotlib.pyplot as plt
 
 from feature_extraction import wash_tld, phishing_get_feature
 
+
+# 二分类随机森林(B_RF)算法
 class RF_classifier:
 
     def __init__(self):
@@ -34,8 +39,8 @@ class RF_classifier:
     def train(self, model_folder, train_feature_add):
         """
         BRF算法训练数据
+        :param model_folder: 模型存储文件夹
         :param train_feature_add: 训练数据路径
-        :param model_add:  模型存储路径
         :return:
         """
         train_df = pd.read_csv(train_feature_add, index_col=['domain_name'])
@@ -46,24 +51,24 @@ class RF_classifier:
         self.RF_clf.fit(x_train, y_train)
         mal_scores = np.array(self.RF_clf.predict_proba(x_train))[:, 1]
         mal_scores = sorted(mal_scores)
-        np.save(r"{}\RF_train_scores.npy".format(model_folder), mal_scores)
-        pickle.dump(self.RF_clf, open("{}\RF_model.pkl".format(model_folder), 'wb'))
+        np.save(r"{}/RF_train_scores.npy".format(model_folder), mal_scores)
+        pickle.dump(self.RF_clf, open("{}/RF_model.pkl".format(model_folder), 'wb'))
 
     def load(self, model_folder):
         """
         将模型文件和归一化尺度读取到内存中
-        :param model_add: 模型存储路径
-        :param standard_scaler_add: 归一化scaler存储路径
+        :param model_folder: 模型存储文件夹
         :return:
         """
-        self.RF_clf = pickle.load(open("{}\RF_model.pkl".format(model_folder), 'rb'))
-        self.standardScaler = pickle.load(open("{}\standardscalar.pkl".format(model_folder), 'rb'))
-        self.train_score = np.load(r"{}\RF_train_scores.npy".format(model_folder))
+        self.RF_clf = pickle.load(open("{}/RF_model.pkl".format(model_folder), 'rb'))
+        self.standardScaler = pickle.load(open("{}/standardscalar.pkl".format(model_folder), 'rb'))
+        self.train_score = np.load(r"{}/RF_train_scores.npy".format(model_folder))
         self.isload_ = True
 
     def predict(self, model_folder, test_feature_add):
         """
         测试集进行测试，计算准确率等
+        :param model_folder: 模型存储文件夹
         :param test_feature_add: 测试数据路径
         :return:
         """
@@ -86,6 +91,7 @@ class RF_classifier:
     def predict_singleDN(self, model_folder, dname):
         """
         对单个域名进行检测，输出检测结果及恶意概率
+        :param model_folder: 模型存储文件夹
         :param dname: 域名
         :return:
         """
@@ -102,7 +108,7 @@ class RF_classifier:
             print("p_value:", p_value)
             return label, prob, p_value
         else:
-            feature = self.standardScaler.transform(pd.DataFrame([get_feature(dname)]))
+            feature = self.standardScaler.transform(pd.DataFrame([phishing_get_feature(dname)]))
             label = self.RF_clf.predict(feature)
             prob = self.RF_clf.predict_proba(feature)
             p_value = cal_pValue(self.train_score, prob[0][1], label[0])
@@ -112,6 +118,7 @@ class RF_classifier:
             return label[0], prob[0][1], p_value
 
 
+# XGBoost算法
 class XGBoost_classifier:
 
     def __init__(self):
@@ -124,8 +131,8 @@ class XGBoost_classifier:
     def train(self, model_folder, train_feature_add):
         """
         XGBoost算法训练数据
+        :param model_folder: 模型存储文件夹
         :param train_feature_add: 训练数据路径
-        :param model_add:  模型存储路径
         :return:
         """
         train_df = pd.read_csv(train_feature_add, index_col=['domain_name'])
@@ -136,24 +143,24 @@ class XGBoost_classifier:
         self.XGBoost_clf.fit(x_train, y_train)
         mal_scores = np.array(self.XGBoost_clf.predict_proba(x_train))[:, 1]
         mal_scores = sorted(mal_scores)
-        np.save(r"{}\XGBoost_train_scores.npy".format(model_folder), mal_scores)
-        pickle.dump(self.XGBoost_clf, open("{}\XGBoost_model.pkl".format(model_folder), 'wb'))
+        np.save(r"{}/XGBoost_train_scores.npy".format(model_folder), mal_scores)
+        pickle.dump(self.XGBoost_clf, open("{}/XGBoost_model.pkl".format(model_folder), 'wb'))
 
     def load(self, model_folder):
         """
         将模型文件和归一化尺度读取到内存中
-        :param model_add: 模型存储路径
-        :param standard_scaler_add: 归一化scaler存储路径
+        :param model_folder: 模型存储文件夹
         :return:
         """
-        self.XGBoost_clf = pickle.load(open("{}\XGBoost_model.pkl".format(model_folder), 'rb'))
-        self.standardScaler = pickle.load(open("{}\standardscalar.pkl".format(model_folder), 'rb'))
-        self.train_score = np.load(r"{}\XGBoost_train_scores.npy".format(model_folder))
+        self.XGBoost_clf = pickle.load(open("{}/XGBoost_model.pkl".format(model_folder), 'rb'))
+        self.standardScaler = pickle.load(open("{}/standardscalar.pkl".format(model_folder), 'rb'))
+        self.train_score = np.load(r"{}/XGBoost_train_scores.npy".format(model_folder))
         self.isload_ = True
 
     def predict(self, model_folder, test_feature_add):
         """
         测试集进行测试，计算准确率等
+        :param model_folder: 模型存储文件夹
         :param test_feature_add: 测试数据路径
         :return:
         """
@@ -176,6 +183,7 @@ class XGBoost_classifier:
     def predict_singleDN(self, model_folder, dname):
         """
         对单个域名进行检测，输出检测结果及恶意概率
+        :param model_folder: 模型存储文件夹
         :param dname: 域名
         :return:
         """
@@ -212,7 +220,7 @@ def cal_pValue(score_list, key, label):
     """
     count = 0
     if label == 0:
-        temp = sorted(score_list, reverse=1)
+        temp = sorted(score_list, reverse=True)
         score_list = [i for i in temp if i <= 0.5]
         left = 0
         right = len(score_list) - 1
@@ -227,7 +235,7 @@ def cal_pValue(score_list, key, label):
                 break
         count = left
     elif label == 1:
-        temp = sorted(score_list, reverse=0)
+        temp = sorted(score_list, reverse=False)
         score_list = [i for i in temp if i > 0.5]
         left = 0
         right = len(score_list) - 1
@@ -246,15 +254,15 @@ def cal_pValue(score_list, key, label):
 
 
 if __name__ == "__main__":
-    train_add = r"M:\APT\features\train_features.csv"
-    test_add = r"M:\APT\features\test_features.csv"
-    RF_model_add = r"M:\APT\model\RF_model.pkl"
-    XGBoost_model_add = r"M:\APT\model\XGBoost_model.pkl"
-    standard_scaler_add = r"M:\APT\model\standardscalar.pkl"
+    train_add = r"./data/feature/train_features.csv"
+    test_add = r"./data/feature/test_features.csv"
+    RF_model_add = r"./data/model/RF_model.pkl"
+    XGBoost_model_add = r"./data/model/XGBoost_model.pkl"
+    standard_scaler_add = r"./data/model/standardscalar.pkl"
 
-    phishing_train_add = r"M:\APT\features\phishing_train_features.csv"
-    phishing_test_add = r"M:\APT\features\phishing_test_features.csv"
-    phishing_model_folder = r"M:\APT\model\phishing"
+    phishing_train_add = r"./data/feature/phishing_train_features.csv"
+    phishing_test_add = r"./data/feature/phishing_test_features.csv"
+    phishing_model_folder = r"./data/model/phishing"
 
     # RF_clf = RF_classifier()
     # RF_clf.train(phishing_model_folder, phishing_train_add)
@@ -262,7 +270,7 @@ if __name__ == "__main__":
     # RF_clf.predict_singleDN(phishing_model_folder, "nkamg.dsalkswjgoijdslk.com")
 
 
-    XGBoost_clf = XGBoost_classifier()
+    # XGBoost_clf = XGBoost_classifier()
     # XGBoost_clf.train(phishing_model_folder, phishing_train_add)
     # XGBoost_clf.predict(phishing_model_folder, phishing_test_add)
     # XGBoost_clf.predict_singleDN(phishing_model_folder, "urldetec.gcowsec.com")
@@ -270,7 +278,7 @@ if __name__ == "__main__":
     XGBoost_clf = XGBoost_classifier()
     mal = 0
     benigh = 0
-    with open("1.txt", "r") as f:
+    with open("test.txt", "r") as f:
         for line in f.readlines():
             name = line.strip()
             print("-----------------------------")

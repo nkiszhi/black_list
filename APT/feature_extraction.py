@@ -2,7 +2,10 @@
 """
 Created on 2020/9/13 18:11
 
-@author : dengcongyi0701@163.com
+__author__ = "Congyi Deng"
+__copyright__ = "Copyright (c) 2021 NKAMG"
+__license__ = "GPL"
+__contact__ = "dengcongyi0701@163.com"
 
 Description:
 
@@ -18,15 +21,15 @@ from collections import Counter, defaultdict
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-hmm_add = r".\static\hmm_matrix.csv"
-gib_add = r".\static\gib_model.pki"
-gramfile_add = r".\static\n_gram_rank_freq.txt"
-private_tld_file = r".\static\private_tld.txt"
-tld_add = r".\static\tld.txt"
-tld_rank_add = r".\static\tld_rank.txt"
-white_file_add = r"M:\APT\data\sample\sample_white.csv"
-black_file_add = r"M:\APT\data\sample\sample_black.csv"
-phishing_file_add = r"M:\APT\data\sample\phishing.csv"
+hmm_add = r"./static/hmm_matrix.csv"
+gib_add = r"./static/gib_model.pki"
+gramfile_add = r"./static/n_gram_rank_freq.txt"
+private_tld_file = r"./static/private_tld.txt"
+tld_add = r"./static/tld.txt"
+tld_rank_add = r"./static/tld_rank.txt"
+white_file_add = r"./data/sample/sample_white.csv"
+black_file_add = r"./data/sample/sample_black.csv"
+phishing_file_add = r"./data/sample/phishing.csv"
 hmm_prob_threshold = -120
 tld_list = list()
 with open(tld_add, 'r', encoding='utf8') as f:
@@ -36,8 +39,8 @@ accepted_chars = 'abcdefghijklmnopqrstuvwxyz '
 pos = dict([(char, idx) for idx, char in enumerate(accepted_chars)])
 abuse_tld = ['email', 'fit', 'tk', 'fail', 'run', 'rest', 'ml', 'cn', 'viajes', 'cf', 'recipes', 'gq', 'ga']
 
-feature_dir = r"M:\APT\features"
-model_dir = r"M:\APT\model"
+feature_dir = r"./data/feature"
+model_dir = r"./data/model"
 
 def wash_tld(dn):
     """
@@ -264,12 +267,12 @@ def phishing_dataset_generation():
     train_feature = pd.DataFrame(standardScaler.transform(train_feature), index=train_feature.index,
                                  columns=train_feature.columns)
     train_feature = train_feature.reset_index()
-    train_feature.to_csv(r"{}\phishing_train_features.csv".format(feature_dir), index=None)
+    train_feature.to_csv(r"{}/phishing_train_features.csv".format(feature_dir), index=None)
     test_feature = pd.DataFrame(standardScaler.transform(test_feature), index=test_feature.index,
                                 columns=test_feature.columns)
     test_feature = test_feature.reset_index()
-    test_feature.to_csv(r"{}\phishing_test_features.csv".format(feature_dir), index=None)
-    pickle.dump(standardScaler, open(r"{}\phishing\standardscalar.pkl".format(model_dir), 'wb'))
+    test_feature.to_csv(r"{}/phishing_test_features.csv".format(feature_dir), index=None)
+    pickle.dump(standardScaler, open(r"{}/phishing/standardscalar.pkl".format(model_dir), 'wb'))
     return
 
 def create_TLD_rank():
@@ -293,6 +296,10 @@ def create_TLD_rank():
     df.to_csv(tld_rank_add, header=False, encoding='utf8')
 
 def load_tlddict():
+    """
+    读取顶级域名危险程度排名
+    :return:
+    """
     rank_dict = dict()
     with open(tld_rank_add, 'r', encoding='utf8') as f:
         for line in f:
@@ -301,8 +308,6 @@ def load_tlddict():
     return rank_dict
 
 if __name__ == "__main__":
-
-    # dataset_generation()
     phishing_dataset_generation()
 
 
