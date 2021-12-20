@@ -3,11 +3,13 @@
 Created on 2020/8/16 12:38
 
 @author : dengcongyi0701@163.com
+          liying_china@163.com
 
 Description:
 
 """
 import warnings
+import math
 warnings.filterwarnings('ignore')
 import pandas as pd
 import pickle
@@ -15,6 +17,7 @@ import numpy as np
 import string
 import tld
 import os
+import collections
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
@@ -34,7 +37,7 @@ from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM
 from sklearn.metrics import precision_score, recall_score, classification_report, accuracy_score, f1_score
 from feature_extraction import wash_tld, get_feature
-
+from sklearn.model_selection import StratifiedShuffleSplit
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # KNN算法
@@ -840,7 +843,7 @@ class LSTM_classifier:
         self.valid_chars = {'q': 17, '0': 27, 'x': 24, 'd': 4, 'l': 12, 'm': 13, 'v': 22, 'n': 14, 'c': 3, 'g': 7, '7': 34, 'u': 21, '5': 32, 'p': 16, 'h': 8, 'b': 2, '6': 33, '-': 38, 'z': 26, '3': 30, 'f': 6, 't': 20, 'j': 10, '1': 28, '4': 31, 's': 19, 'o': 15, 'w': 23, '9': 36, 'r': 18, 'i': 9, 'e': 5, 'y': 25, 'a': 1, '.': 37, '2': 29, '_': 39, '8': 35, 'k': 11}
         self.maxlen = 178
         self.max_features = 40
-        self.max_epoch = 20
+        self.max_epoch = 2  # 20
         self.batch_size = 128
         self.tld_list = []
         with open(r'./data/tld.txt', 'r', encoding='utf8') as f:
@@ -859,6 +862,76 @@ class LSTM_classifier:
         self.model.add(Dense(1))
         self.model.add(Activation('sigmoid'))
         self.model.compile(loss='binary_crossentropy',optimizer='rmsprop')
+
+    def create_class_weight(self, labels_dict, mu):
+        """Create weight based on the number of sld name in the dataset"""
+        labels_dict = dict(labels_dict)
+        keys = labels_dict.keys()
+        total = labels_dict[1] + labels_dict[0]
+        class_weight = dict()
+        for key in keys:
+            score = math.pow(total/float(labels_dict[key]), mu)
+            class_weight[key] = score
+        return class_weight
+
+    def train(self, train_feature_add, model_add, model_weight):
+        """
+        训练模型
+        :param train_feature_add: 训练数据
+        :param model_add: 模型json文件
+        :param model_weight: 模型权重文件
+        :return:
+        """
+        # 获取训练和测试数据， domain，label
+        train_df = pd.read_csv(train_feature_add, header=[0])
+        train_df = train_df.iloc[:, 0:2]
+        train_df["domain_name"] = train_df["domain_name"].apply(self.data_pro)
+        sld = train_df["domain_name"].to_list()
+        label = train_df["label"].to_list()
+        X = [[self.valid_chars[y] for y in x] for x in sld]
+        X = sequence.pad_sequences(X, maxlen=self.maxlen)
+        y = np.array(label)
+        sss = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=4)
+        for train, test in sss.split(X, y):
+            X_train, X_test, y_train, y_test = X[train], X[test], y[train], y[test]
+
+            print("---train:{}---test:{}----y_train:{}----y_test:{}".format(len(X_train), len(X_test), len(y_train),
+                                                                            len(y_test)))
+            # shuffle
+            np.random.seed(4)  # 1024
+            index = np.arange(len(X_train))
+            np.random.shuffle(index)
+            X_train = np.array(X_train)[index]
+            y_train = np.array(y_train)[index]
+            # build model
+            self.build_binary_model()
+            # train
+            sss1 = StratifiedShuffleSplit(n_splits=1, test_size=0.05, random_state=0)
+            for train, test in sss1.split(X_train, y_train):
+                X_train, X_holdout, y_train, y_holdout = X_train[train], X_train[test], y_train[train], y_train[test]  # holdout验证集
+            labels_dict = collections.Counter(y_train)
+            class_weight = self.create_class_weight(labels_dict, 0.3)
+            print('----class weight:{}'.format(class_weight))
+            # 20
+            best_acc = 0.0
+            best_model = None
+            for ep in range(self.max_epoch):
+                self.model.fit(X_train, y_train, batch_size=self.batch_size, epochs=1, class_weight=class_weight)
+                t_probs = self.model.predict_proba(X_holdout)
+                t_result = [0 if x <= 0.5 else 1 for x in t_probs]
+                t_acc = accuracy_score(y_holdout, t_result)
+                print("epoch:{}--------val acc:{}---------best_acc:{}".format(ep, t_acc, best_acc))
+                if t_acc > best_acc:
+                    best_model = self.model
+                    best_acc = t_acc
+            model_json = best_model.to_json()
+            # 模型的权重保存在HDF5中
+            # 模型的结构保存在JSON文件或者YAML文件中
+            with open(model_add, "w") as json_file:
+                json_file.write(model_json)
+                self.model.save_weights(model_weight)
+            print("Saved two-class model to disk")
+
 
     def load(self, model_add, model_weight_add):
         """
@@ -880,7 +953,6 @@ class LSTM_classifier:
         """
         url = url.strip().strip('.').strip('/')
         url = url.replace("http://", '')
-        print(url)
         url = url.split('/')[0]
         url = url.split('?')[0]
         url = url.split('=')[0]
@@ -983,7 +1055,10 @@ if __name__ == "__main__":
     train_add = r"./data/features/train_features.csv"
     test_add = r"./data/features/test_features.csv"
 
+
+
     # LSTM_clf = LSTM_classifier()
+    # LSTM_clf.train(train_add, LSTM_model_add, LSTM_model_weight)
     # LSTM_clf.load(LSTM_model_add, LSTM_model_weight)
     # while True:
     #     a = input("请输入。。")
